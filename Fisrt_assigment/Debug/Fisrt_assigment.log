@@ -1,0 +1,3 @@
+﻿C:\Program Files\Microsoft Visual Studio\2022\Professional\MSBuild\Microsoft\VC\v170\Microsoft.CppBuild.targets(538,5): warning MSB8028: The intermediate directory (Debug\) contains files shared from another project (Fisrt_assigment.vcxproj).  This can lead to incorrect clean and rebuild behavior.
+  User.cpp
+  Fisrt_assigment.vcxproj -> C:\Users\Hikmatyar\Desktop\Fisrt_assigment\Debug\Social_Media_Feed_Manager.exe

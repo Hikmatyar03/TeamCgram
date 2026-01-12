@@ -1,0 +1,14 @@
+USER
+id=12
+username=alice
+password_hash=HASH
+bio=Hello
+
+FOLLOWING
+3
+7
+
+POST
+postID|timestamp|likes|content
+COMMENT|uid|timestamp|text
+END

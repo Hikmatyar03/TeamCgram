@@ -1,0 +1,14 @@
+﻿  1.cpp
+C:\Users\Hikmatyar\Desktop\Fisrt_assigment\External\SFML-3.0.0\include\SFML\System\Exception.hpp(41,47): warning C4275: non dll-interface class 'std::runtime_error' used as base for dll-interface class 'sf::Exception'
+  (compiling source file '1.cpp')
+      C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC\14.43.34808\include\stdexcept(100,19):
+      see declaration of 'std::runtime_error'
+      C:\Users\Hikmatyar\Desktop\Fisrt_assigment\External\SFML-3.0.0\include\SFML\System\Exception.hpp(41,23):
+      see declaration of 'sf::Exception'
+  
+  main.cpp
+  Generating code
+  Previous IPDB not found, fall back to full compilation.
+  All 83 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Finished generating code
+  Fisrt_assigment.vcxproj -> C:\Users\Hikmatyar\Desktop\Fisrt_assigment\Release\Fisrt_assigment.exe

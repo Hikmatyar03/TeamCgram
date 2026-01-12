@@ -1,0 +1,3 @@
+Window 800 600 60
+Font font/MontserratAlternates-Black.ttf 18 255 255 255
+

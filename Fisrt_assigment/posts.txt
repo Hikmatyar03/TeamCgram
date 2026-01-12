@@ -1,0 +1,4 @@
+postID|userID|timestamp|likes|content
+COMMENT:userID|timestamp|text
+COMMENT:userID|timestamp|text
+END
