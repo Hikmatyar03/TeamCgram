@@ -113,20 +113,25 @@ void FeedScreen::handleEvent(const sf::Event& event, sf::RenderWindow&) {
         sf::Vector2f pos(static_cast<float>(mouse->position.x),
             static_cast<float>(mouse->position.y));
 
+        std::cout << "Mouse clicked at: (" << pos.x << ", " << pos.y << ")" << std::endl;
+
         // Notification button
         if (notificationBtn.getGlobalBounds().contains(pos)) {
+            std::cout << "Notification button clicked" << std::endl;
             app.setScreen(new NotificationScreen(app));
             return;
         }
 
         // Profile button
         if (profileBtn.getGlobalBounds().contains(pos)) {
+            std::cout << "Profile button clicked" << std::endl;
             app.setScreen(new ProfileScreen(app, app.getCurrentUser()->userID));
             return;
         }
 
         // Post input box
         if (postInputBox.getGlobalBounds().contains(pos)) {
+            std::cout << "Post input box clicked" << std::endl;
             postInputActive = true;
             activeCommentPostID = -1;
         }
@@ -136,6 +141,7 @@ void FeedScreen::handleEvent(const sf::Event& event, sf::RenderWindow&) {
 
         // Create post button
         if (createPostBtn.getGlobalBounds().contains(pos) && !postContent.empty()) {
+            std::cout << "Create post button clicked" << std::endl;
             app.createPost(app.getCurrentUser()->userID, postContent);
             postContent.clear();
             postInputActive = false;
@@ -145,39 +151,55 @@ void FeedScreen::handleEvent(const sf::Event& event, sf::RenderWindow&) {
 
         // Logout button
         if (logoutBtn.getGlobalBounds().contains(pos)) {
+            std::cout << "Logout button clicked" << std::endl;
             app.logout();
             app.setScreen(new LoginScreen(app));
             return;
         }
 
         // Handle post interactions
-        float y = 245.f + scrollOffset;
+        float y = 285.f + scrollOffset;  // Changed from 245.f to match render
         auto posts = app.getAllPosts();
 
         std::sort(posts.begin(), posts.end(), [](Post* a, Post* b) {
             return a->timestamp > b->timestamp;
             });
 
+        std::cout << "Checking " << posts.size() << " posts for interactions" << std::endl;
+
         for (Post* post : posts) {
-            // Like button
+            std::cout << "Post " << post->postID << " at Y position: " << y << std::endl;
+
+            // Like button - Fixed positioning
             sf::FloatRect likeBtn({ 50.f, y + 100.f }, { 80.f, 35.f });
+            std::cout << "  Like button bounds: (" << likeBtn.position.x << ", " << likeBtn.position.y
+                << ") size: (" << likeBtn.size.x << ", " << likeBtn.size.y << ")" << std::endl;
+
             if (likeBtn.contains(pos)) {
+                std::cout << "LIKE BUTTON CLICKED for post " << post->postID << std::endl;
+
                 auto& likes = post->likedBy;
                 bool alreadyLiked = std::find(likes.begin(), likes.end(),
                     app.getCurrentUser()->userID) != likes.end();
 
                 if (alreadyLiked) {
+                    std::cout << "Unliking post..." << std::endl;
                     app.unlikePost(app.getCurrentUser()->userID, post->postID);
                 }
                 else {
+                    std::cout << "Liking post..." << std::endl;
                     app.likePost(app.getCurrentUser()->userID, post->postID);
                 }
                 return;
             }
 
-            // Comment button
+            // Comment button - Fixed positioning
             sf::FloatRect commentBtn({ 150.f, y + 100.f }, { 100.f, 35.f });
+            std::cout << "  Comment button bounds: (" << commentBtn.position.x << ", " << commentBtn.position.y
+                << ") size: (" << commentBtn.size.x << ", " << commentBtn.size.y << ")" << std::endl;
+
             if (commentBtn.contains(pos)) {
+                std::cout << "COMMENT BUTTON CLICKED for post " << post->postID << std::endl;
                 activeCommentPostID = post->postID;
                 postInputActive = false;
                 commentContent.clear();
@@ -188,12 +210,13 @@ void FeedScreen::handleEvent(const sf::Event& event, sf::RenderWindow&) {
             if (activeCommentPostID == post->postID) {
                 sf::FloatRect commentInput({ 50.f, y + 150.f }, { 600.f, 40.f });
                 if (commentInput.contains(pos)) {
-                    // Clicking comment input keeps it active
+                    std::cout << "Comment input clicked" << std::endl;
                     return;
                 }
 
                 sf::FloatRect submitBtn({ 670.f, y + 150.f }, { 100.f, 40.f });
                 if (submitBtn.contains(pos) && !commentContent.empty()) {
+                    std::cout << "Submit comment button clicked" << std::endl;
                     app.addComment(post->postID, app.getCurrentUser()->userID, commentContent);
                     commentContent.clear();
                     activeCommentPostID = -1;
@@ -454,7 +477,7 @@ void FeedScreen::renderPost(sf::RenderWindow& window, Post* post, float& yPos) {
     commentBtnText.setString("Comment" + std::to_string(commentCount));
     commentBtnText.setCharacterSize(14);
     commentBtnText.setFillColor(sf::Color::White);
-    commentBtnText.setPosition({ 168.f, yPos + 108.f });
+    commentBtnText.setPosition({ 158.f, yPos + 108.f });
     window.draw(commentBtnText);
 
     yPos += 145.f;

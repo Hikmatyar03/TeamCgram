@@ -7,6 +7,6 @@ C:\Users\Hikmatyar\Desktop\Fisrt_assigment\External\SFML-3.0.0\include\SFML\Syst
       C:\Users\Hikmatyar\Desktop\Fisrt_assigment\External\SFML-3.0.0\include\SFML\System\Exception.hpp(41,23):
       see declaration of 'sf::Exception'
   
-C:\Users\Hikmatyar\Desktop\Fisrt_assigment\Fisrt_assigment\FeedScreen.cpp(432,35): warning C4566: character represented by universal-character-name '\u2764' cannot be represented in the current code page (1252)
-C:\Users\Hikmatyar\Desktop\Fisrt_assigment\Fisrt_assigment\FeedScreen.cpp(432,44): warning C4566: character represented by universal-character-name '\U0001F90D' cannot be represented in the current code page (1252)
+C:\Users\Hikmatyar\Desktop\Fisrt_assigment\Fisrt_assigment\FeedScreen.cpp(455,35): warning C4566: character represented by universal-character-name '\u2764' cannot be represented in the current code page (1252)
+C:\Users\Hikmatyar\Desktop\Fisrt_assigment\Fisrt_assigment\FeedScreen.cpp(455,44): warning C4566: character represented by universal-character-name '\U0001F90D' cannot be represented in the current code page (1252)
   Fisrt_assigment.vcxproj -> C:\Users\Hikmatyar\Desktop\Fisrt_assigment\Debug\Social_Media_Feed_Manager.exe

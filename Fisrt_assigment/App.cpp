@@ -4,6 +4,7 @@
 #include <iostream>
 #include "User.h"
 #include "UserBST.h"
+
 App::App()
     : currentUser(nullptr),
     currentScreen(nullptr) {
@@ -85,6 +86,7 @@ void App::followUser(int followerID, int followeeID) {
 
     following.push_back(followeeID);
 
+    // Create notification for the user being followed
     std::string message = follower->username + " started following you";
     notificationManager.addNotification(followeeID, followerID,
         NotificationType::FOLLOW, message);
@@ -105,6 +107,7 @@ void App::likePost(int userID, int postID) {
     Post* post = nullptr;
     User* postAuthor = nullptr;
 
+    // Find the post and its author
     for (User* user : users.getAllUsers()) {
         for (Post* p : user->posts.getAllPosts()) {
             if (p->postID == postID) {
@@ -116,21 +119,36 @@ void App::likePost(int userID, int postID) {
         if (post) break;
     }
 
-    if (!post || !postAuthor) return;
-
-    if (std::find(post->likedBy.begin(), post->likedBy.end(), userID) != post->likedBy.end()) {
+    if (!post || !postAuthor) {
+        std::cerr << "Post not found: " << postID << std::endl;
         return;
     }
 
+    // Check if already liked
+    if (std::find(post->likedBy.begin(), post->likedBy.end(), userID) != post->likedBy.end()) {
+        std::cout << "Post already liked by user " << userID << std::endl;
+        return;
+    }
+
+    // Add like
     post->likedBy.push_back(userID);
     post->likes++;
 
+    std::cout << "User " << userID << " liked post " << postID << std::endl;
+
+    // Create notification (don't notify yourself)
     if (postAuthor->userID != userID) {
         User* liker = users.getUserByID(userID);
         if (liker) {
             std::string message = liker->username + " liked your post";
-            notificationManager.addNotification(postAuthor->userID, userID,
-                NotificationType::LIKE, message, postID);
+            notificationManager.addNotification(
+                postAuthor->userID,  // Recipient: post author
+                userID,              // Sender: person who liked
+                NotificationType::LIKE,
+                message,
+                postID
+            );
+            std::cout << "Notification created: " << message << std::endl;
         }
     }
 }
@@ -144,6 +162,7 @@ void App::unlikePost(int userID, int postID) {
                     p->likedBy.end()
                 );
                 if (p->likes > 0) p->likes--;
+                std::cout << "User " << userID << " unliked post " << postID << std::endl;
                 return;
             }
         }
@@ -154,6 +173,7 @@ void App::addComment(int postID, int userID, const std::string& content) {
     Post* post = nullptr;
     User* postAuthor = nullptr;
 
+    // Find the post and its author
     for (User* user : users.getAllUsers()) {
         for (Post* p : user->posts.getAllPosts()) {
             if (p->postID == postID) {
@@ -165,14 +185,19 @@ void App::addComment(int postID, int userID, const std::string& content) {
         if (post) break;
     }
 
-    if (!post || !postAuthor) return;
+    if (!post || !postAuthor) {
+        std::cerr << "Post not found: " << postID << std::endl;
+        return;
+    }
 
+    // Create new comment
     Comment* newComment = new Comment();
     newComment->userID = userID;
     newComment->text = content;
     newComment->timestamp = std::time(nullptr);
     newComment->next = nullptr;
 
+    // Add comment to the post
     if (!post->comments) {
         post->comments = newComment;
     }
@@ -184,12 +209,21 @@ void App::addComment(int postID, int userID, const std::string& content) {
         current->next = newComment;
     }
 
+    std::cout << "User " << userID << " commented on post " << postID << std::endl;
+
+    // Create notification (don't notify yourself)
     if (postAuthor->userID != userID) {
         User* commenter = users.getUserByID(userID);
         if (commenter) {
             std::string message = commenter->username + " commented on your post";
-            notificationManager.addNotification(postAuthor->userID, userID,
-                NotificationType::COMMENT, message, postID);
+            notificationManager.addNotification(
+                postAuthor->userID,  // Recipient: post author
+                userID,              // Sender: person who commented
+                NotificationType::COMMENT,
+                message,
+                postID
+            );
+            std::cout << "Notification created: " << message << std::endl;
         }
     }
 }
