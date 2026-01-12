@@ -1,7 +1,9 @@
 ﻿#include "Post.h"
 #include <algorithm>
 
-// ✅ Constructor (MATCHES Post.h EXACTLY)
+// =====================
+// Constructor
+// =====================
 Post::Post(int pid, int uid, const std::string& content)
     : postID(pid),
     userID(uid),
@@ -10,13 +12,13 @@ Post::Post(int pid, int uid, const std::string& content)
     likes(0),
     comments(nullptr),
     prev(nullptr),
-    next(nullptr)
-{
+    next(nullptr) {
 }
 
-// ✅ Like
-bool Post::like(int uid)
-{
+// =====================
+// Like
+// =====================
+bool Post::like(int uid) {
     if (std::find(likedBy.begin(), likedBy.end(), uid) != likedBy.end())
         return false;
 
@@ -25,9 +27,10 @@ bool Post::like(int uid)
     return true;
 }
 
-// ✅ Unlike
-bool Post::unlike(int uid)
-{
+// =====================
+// Unlike
+// =====================
+bool Post::unlike(int uid) {
     auto it = std::find(likedBy.begin(), likedBy.end(), uid);
     if (it == likedBy.end())
         return false;
@@ -37,9 +40,10 @@ bool Post::unlike(int uid)
     return true;
 }
 
-// ✅ Add comment (MATCHES Post.h EXACTLY)
-void Post::addComment(int uid, const std::string& text)
-{
+// =====================
+// Add Comment
+// =====================
+void Post::addComment(int uid, const std::string& text) {
     Comment* c = new Comment(uid, text);
     c->next = comments;
     comments = c;

@@ -21,7 +21,7 @@ struct UserNode {
 // ==========================
 class UserBST {
 private:
-    UserNode* root;      // ✅ ONLY ONE ROOT
+    UserNode* root;
     int nextUserID;
 
     // Internal helpers (BST-based)
@@ -33,7 +33,7 @@ private:
         const std::string& username,
         std::vector<User*>& results
     ) const;
-   
+
 public:
     UserBST();
     ~UserBST();
@@ -45,9 +45,8 @@ public:
         const std::string& bio
     );
 
-
-    // Core operations
-    bool registerUser(const std::string& username, const std::string& password);
+    // Core operations - CHANGED: registerUser now returns User*
+    User* registerUser(const std::string& username, const std::string& password);
     User* login(const std::string& username, const std::string& password);
 
     User* getUserByID(int id) const;

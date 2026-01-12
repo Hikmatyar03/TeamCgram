@@ -1,45 +1,53 @@
 ﻿#pragma once
+
 #include <string>
 #include <vector>
 #include <ctime>
 
-struct Comment
-{
+// =====================
+// Comment Node
+// =====================
+
+struct Comment {
     int userID;
     std::string text;
-    std::time_t timestamp;   // ✅ REQUIRED
+    time_t timestamp;
     Comment* next;
 
-    Comment(int uid, const std::string& t)
-        : userID(uid),
-        text(t),
-        timestamp(std::time(nullptr)), // ✅ INITIALIZED
-        next(nullptr)
-    {
+    // Add default constructor
+    Comment()
+        : userID(0), text(""), timestamp(0), next(nullptr) {
+    }
+
+    // Optional: parameterized constructor
+    Comment(int uid, const std::string& txt)
+        : userID(uid), text(txt), timestamp(std::time(nullptr)), next(nullptr) {
     }
 };
-
-
-class Post
-{
+// =====================
+// Post Class
+// =====================
+class Post {
 public:
     int postID;
     int userID;
     std::string content;
-    std::time_t timestamp;
-    int likes;
+    time_t timestamp;
 
-    Comment* comments;
+    int likes;                     // REQUIRED
+    std::vector<int> likedBy;      // REQUIRED
+    Comment* comments;             // REQUIRED
+
     Post* prev;
     Post* next;
 
-    std::vector<int> likedBy;   // prevents double-like
-
-    // ✅ FULLY INITIALIZED CONSTRUCTOR
+    // Constructor
     Post(int pid, int uid, const std::string& content);
 
-    // Actions
+    // Like system
     bool like(int uid);
     bool unlike(int uid);
+
+    // Comments
     void addComment(int uid, const std::string& text);
 };

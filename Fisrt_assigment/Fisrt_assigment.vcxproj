@@ -20,13 +20,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp" />
+    <ClCompile Include="ExploreScreen.cpp" />
     <ClCompile Include="FeedManager.cpp" />
     <ClCompile Include="FeedScreen.cpp" />
     <ClCompile Include="FileManager.cpp" />
     <ClCompile Include="HistoryStack.cpp" />
     <ClCompile Include="LoginScreen.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="NotificationQueue.cpp" />
     <ClCompile Include="NotificationScreen.cpp" />
     <ClCompile Include="Post.cpp" />
     <ClCompile Include="PostList.cpp" />
@@ -47,14 +47,14 @@
   <ItemGroup>
     <ClInclude Include="App.h" />
     <ClInclude Include="Comment.h" />
+    <ClInclude Include="ExploreScreen.h" />
     <ClInclude Include="FeedManager.h" />
     <ClInclude Include="FeedScreen.h" />
     <ClInclude Include="FileManager.h" />
     <ClInclude Include="HistoryStack.h" />
     <ClInclude Include="LoginScreen.h" />
-    <ClInclude Include="Notification.h" />
-    <ClInclude Include="NotificationQueue.h" />
     <ClInclude Include="NotificationScreen.h" />
+    <ClInclude Include="NotificationSystem.h" />
     <ClInclude Include="PasswordHasher.h" />
     <ClInclude Include="Post.h" />
     <ClInclude Include="PostList.h" />

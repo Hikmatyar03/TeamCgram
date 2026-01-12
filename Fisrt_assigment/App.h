@@ -1,41 +1,49 @@
 ﻿#pragma once
-#include "UserBST.h"
-#include "FeedManager.h"
-#include "HistoryStack.h"
-#include "FileManager.h"
+#include <SFML/Graphics.hpp>
+#include <vector>
+#include <string>
 #include "Screen.h"
+#include "UserBST.h"
+#include "NotificationSystem.h"
 
-class Screen; // forward declaration
+// Forward declarations
+class Screen;
 
-class App
-{
+class App {
+private:
+    UserBST users;
+    User* currentUser;
+    Screen* currentScreen;
+    NotificationManager notificationManager;
+
 public:
     App();
     ~App();
-    void saveData();
 
-    void setScreen(Screen* screen);
-    Screen* getScreen() const;
-
-    bool registerUser(const std::string& username, const std::string& password);
+    // Authentication
     bool login(const std::string& username, const std::string& password);
+    bool registerUser(const std::string& username, const std::string& password);
     void logout();
 
-    User* getCurrentUser() const;
-    UserBST& getUsers();
-    std::vector<Post*> getFeed() const;
+    // Getters
+    User* getCurrentUser() const { return currentUser; }
+    UserBST& getUsers() { return users; }
+    const UserBST& getUsers() const { return users; }
+    Screen* getScreen() const { return currentScreen; }
+    NotificationManager& getNotificationManager() { return notificationManager; }
+    std::vector<Post*> getAllPosts() const;
 
-    void createPost(const std::string& text);
-    
-  
-private:
- 
-    void loadData();
-    User* currentUser = nullptr;
-    Screen* currentScreen = nullptr;
+    // Screen management
+    void setScreen(Screen* screen);
 
-    UserBST users;
-    FeedManager feedManager;
-    FileManager fileManager;
-    HistoryStack history;
+    // Post operations
+    Post* createPost(int userID, const std::string& content);
+    void deletePost(int postID);
+
+    // Social operations
+    void followUser(int followerID, int followeeID);
+    void unfollowUser(int followerID, int followeeID);
+    void likePost(int userID, int postID);
+    void unlikePost(int userID, int postID);
+    void addComment(int postID, int userID, const std::string& content);
 };

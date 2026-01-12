@@ -1,30 +1,21 @@
 ﻿#include "FileManager.h"
-#include "UserBST.h"   // REQUIRED
+#include "UserBST.h"
 #include <fstream>
 #include <sstream>
 #include <algorithm>
 
 #include "User.h"
 #include "Post.h"
+#include "NotificationSystem.h"  // CHANGE THIS LINE from "Notification.h"
 
+// Remove or comment out the notification save/load functions since
+// notifications are now managed centrally in App, not per-user
 
-
-void FileManager::saveConnections(const UserBST& users) const{
-    std::ofstream out(basePath + "connections.txt");
-
-    for (User* u : users.getAllUsers()) {
-        for (int target : u->following) {
-            out << u->userID << "," << target << "\n";
-        }
-    }
-}
-void FileManager::createUserFile(const std::string& username)
-{
+void FileManager::createUserFile(const std::string& username) {
     std::ofstream out(basePath + "users/" + username + ".txt", std::ios::app);
 }
 
-
-void FileManager::loadConnections(UserBST& users)  {
+void FileManager::loadConnections(UserBST& users) {
     std::ifstream in(basePath + "connections.txt");
     std::string line;
 
@@ -38,15 +29,13 @@ void FileManager::loadConnections(UserBST& users)  {
         users.followUser(std::stoi(follower), std::stoi(target));
     }
 }
-void FileManager::loadDummyFeed(UserBST& users)
-{
+
+void FileManager::loadDummyFeed(UserBST& users) {
     std::ifstream in(basePath + "demo_feed.txt");
     if (!in) return;
 
     std::string line;
-    while (std::getline(in, line))
-    {
-        // format: username|content
+    while (std::getline(in, line)) {
         std::stringstream ss(line);
         std::string username, content;
 
@@ -60,82 +49,41 @@ void FileManager::loadDummyFeed(UserBST& users)
     }
 }
 
-void FileManager::appendToGlobalFeed(const User& user, const Post& post)
-{
+void FileManager::appendToGlobalFeed(const User& user, const Post& post) {
     std::ofstream out(basePath + "feed.txt", std::ios::app);
-
-    out << "POST|"
-        << post.postID << "|"
-        << user.username << "|"
-        << post.timestamp << "\n";
+    out << "POST|" << post.postID << "|" << user.username << "|" << post.timestamp << "\n";
 }
 
-
-
+// COMMENT OUT OR REMOVE these notification functions
+// since User no longer has notifications member
+/*
 void FileManager::saveNotifications(const UserBST& users) const {
-    std::ofstream out(basePath + "notifications.txt");
-
-    for (User* u : users.getAllUsers()) {
-        auto notifs = u->notifications.getAllOrdered();
-        for (auto& n : notifs) {
-            out << u->userID << "|"
-                << static_cast<int>(n.type) << "|"
-                << n.timestamp << "|"
-                << n.isRead << "|"
-                << n.message << "\n";
-        }
-    }
+    // Remove - notifications are now in App
 }
+
 void FileManager::loadNotifications(UserBST& users) {
-    std::ifstream in(basePath + "notifications.txt");
-    std::string line;
-
-    while (std::getline(in, line)) {
-        std::stringstream ss(line);
-        std::string uid, type, ts, read, msg;
-
-        std::getline(ss, uid, '|');
-        std::getline(ss, type, '|');
-        std::getline(ss, ts, '|');
-        std::getline(ss, read, '|');
-        std::getline(ss, msg);
-
-        User* u = users.getUserByID(std::stoi(uid));
-        if (!u) continue;
-
-        Notification n(
-            static_cast<NotificationType>(std::stoi(type)),
-            msg
-        );
-        n.timestamp = std::stol(ts);
-        n.isRead = (read == "1");
-
-        u->notifications.add(n.type, n.message);
-    }
+    // Remove - notifications are now in App
 }
-void FileManager::loadUserData(User& user)
-{
+*/
+
+void FileManager::loadUserData(User& user) {
     std::ifstream in(basePath + "users/" + user.username + ".txt");
     if (!in) return;
 
     std::string line;
-    while (std::getline(in, line))
-    {
+    while (std::getline(in, line)) {
         if (line.rfind("BIO|", 0) == 0)
             user.bio = line.substr(4);
     }
 }
 
-
-void FileManager::saveUserData(const User& user)
-{
+void FileManager::saveUserData(const User& user) {
     std::ofstream out(basePath + "users/" + user.username + ".txt");
 
     out << "ID|" << user.userID << "\n";
     out << "BIO|" << user.bio << "\n";
 
-    for (Post* p : user.posts.getAllPosts())
-    {
+    for (Post* p : user.posts.getAllPosts()) {
         out << "POST|" << p->postID << "|" << p->content << "|" << p->timestamp << "|" << p->likes << "\n";
 
         for (Comment* c = p->comments; c; c = c->next)
@@ -145,26 +93,10 @@ void FileManager::saveUserData(const User& user)
     }
 }
 
-
-
-// Add this constructor implementation
 FileManager::FileManager(const std::string& path) {
     this->basePath = path;
-
-    // Optional safety: Ensure path ends with a slash so file names concatenate correctly
-    // e.g., if path is "data", make it "data/" so you get "data/users.txt"
     if (!basePath.empty() && basePath.back() != '/' && basePath.back() != '\\') {
         basePath += "/";
-    }
-}
-
-void FileManager::saveUsers(const UserBST& users) const {
-    std::ofstream out(basePath + "users.txt");
-
-    for (User* u : users.getAllUsers()) {
-        out << u->userID << "|"
-            << u->username << "|"
-            << u->password << "\n";
     }
 }
 
@@ -182,20 +114,6 @@ void FileManager::loadUsers(UserBST& users) {
         std::getline(ss, password);
 
         users.registerUser(username, password);
-    }
-}
-
-void FileManager::savePosts(const UserBST& users) const {
-    std::ofstream out(basePath + "posts.txt");
-
-    for (User* u : users.getAllUsers()) {
-        for (Post* p : u->posts.getAllPosts()) {
-            out << p->postID << "|"
-                << p->userID << "|"
-                << p->content << "|"
-                << p->timestamp << "|"
-                << p->likes << "\n";
-        }
     }
 }
 
@@ -221,5 +139,48 @@ void FileManager::loadPosts(UserBST& users) {
         p->postID = std::stoi(postID);
         p->timestamp = std::stol(timestamp);
         p->likes = std::stoi(likes);
+    }
+}
+
+void FileManager::createDefaultPosts(User& user) {
+    std::vector<std::string> defaultPosts = {
+        "Hey everyone! " + user.username + " here. Excited to be part of this community! 🎉",
+        "Just created my account. Looking forward to sharing and connecting with you all!",
+        "New here! Drop a comment and let's connect! 👋"
+    };
+
+    for (const auto& postContent : defaultPosts) {
+        Post* p = user.posts.createPost(user.userID, postContent);
+        appendToGlobalFeed(user, *p);
+    }
+}
+
+void FileManager::saveConnections(const UserBST& users) const {
+    std::ofstream out(basePath + "connections.txt");
+    std::vector<User*> allUsers = users.getAllUsers();
+    for (User* u : allUsers) {
+        for (int target : u->following) {
+            out << u->userID << "," << target << "\n";
+        }
+    }
+}
+
+void FileManager::savePosts(const UserBST& users) const {
+    std::ofstream out(basePath + "posts.txt");
+    std::vector<User*> allUsers = users.getAllUsers();
+    for (User* u : allUsers) {
+        std::vector<Post*> userPosts = u->posts.getAllPosts();
+        for (Post* p : userPosts) {
+            out << p->postID << "|" << p->userID << "|" << p->content << "|"
+                << p->timestamp << "|" << p->likes << "\n";
+        }
+    }
+}
+
+void FileManager::saveUsers(const UserBST& users) const {
+    std::ofstream out(basePath + "users.txt");
+    std::vector<User*> allUsers = users.getAllUsers();
+    for (User* u : allUsers) {
+        out << u->userID << "|" << u->username << "|" << u->password << "\n";
     }
 }

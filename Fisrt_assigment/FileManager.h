@@ -21,6 +21,7 @@ public:
     // global feed
     void appendToGlobalFeed(const User& user, const Post& post);
     void loadDummyFeed(UserBST& users);
+    void createDefaultPosts(User& user);  // NEW METHOD
 
     // system data
     void saveUsers(const UserBST& users) const;

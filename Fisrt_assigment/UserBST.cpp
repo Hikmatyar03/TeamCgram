@@ -9,8 +9,7 @@ UserBST::UserBST()
     : root(nullptr), nextUserID(1) {
 }
 
-UserBST::~UserBST()
-{
+UserBST::~UserBST() {
     // Delete all users (nodes will be deleted recursively)
     std::vector<User*> users = getAllUsers();
     for (User* u : users)
@@ -21,8 +20,7 @@ UserBST::~UserBST()
 // INTERNAL BST HELPERS
 // ==========================
 
-UserNode* UserBST::insert(UserNode* node, User* newUser)
-{
+UserNode* UserBST::insert(UserNode* node, User* newUser) {
     if (!node)
         return new UserNode(newUser);
 
@@ -34,14 +32,12 @@ UserNode* UserBST::insert(UserNode* node, User* newUser)
     return node;
 }
 
-
 bool UserBST::registerLoadedUser(
     int id,
     const std::string& username,
     const std::string& password,
     const std::string& bio
-)
-{
+) {
     // Prevent duplicate usernames
     if (!searchUserByUsername(username).empty())
         return false;
@@ -58,9 +54,7 @@ bool UserBST::registerLoadedUser(
     return true;
 }
 
-
-UserNode* UserBST::searchByID(UserNode* node, int userID) const
-{
+UserNode* UserBST::searchByID(UserNode* node, int userID) const {
     if (!node)
         return nullptr;
 
@@ -77,8 +71,7 @@ void UserBST::searchByUsername(
     UserNode* node,
     const std::string& username,
     std::vector<User*>& results
-) const
-{
+) const {
     if (!node)
         return;
 
@@ -89,8 +82,7 @@ void UserBST::searchByUsername(
     searchByUsername(node->right, username, results);
 }
 
-void UserBST::inorder(UserNode* node, std::vector<User*>& users) const
-{
+void UserBST::inorder(UserNode* node, std::vector<User*>& users) const {
     if (!node)
         return;
 
@@ -103,22 +95,21 @@ void UserBST::inorder(UserNode* node, std::vector<User*>& users) const
 // PUBLIC API
 // ==========================
 
-bool UserBST::registerUser(const std::string& username, const std::string& password)
-{
+// CHANGED: Now returns User* instead of bool
+User* UserBST::registerUser(const std::string& username, const std::string& password) {
     if (password.length() < 6)
-        return false;
+        return nullptr;
 
     // Enforce unique username
     if (!searchUserByUsername(username).empty())
-        return false;
+        return nullptr;
 
     User* newUser = new User(nextUserID++, username, password);
     root = insert(root, newUser);
-    return true;
+    return newUser;  // Return the created user
 }
 
-User* UserBST::login(const std::string& username, const std::string& password)
-{
+User* UserBST::login(const std::string& username, const std::string& password) {
     auto matches = searchUserByUsername(username);
     if (matches.empty())
         return nullptr;
@@ -130,28 +121,23 @@ User* UserBST::login(const std::string& username, const std::string& password)
     return user;
 }
 
-User* UserBST::getUserByID(int id) const
-{
+User* UserBST::getUserByID(int id) const {
     UserNode* node = searchByID(root, id);
     return node ? node->user : nullptr;
 }
 
-User* UserBST::getUserByUsername(const std::string& username)
-{
+User* UserBST::getUserByUsername(const std::string& username) {
     auto v = searchUserByUsername(username);
     return v.empty() ? nullptr : v.front();
 }
 
-std::vector<User*> UserBST::searchUserByUsername(const std::string& username) const
-{
+std::vector<User*> UserBST::searchUserByUsername(const std::string& username) const {
     std::vector<User*> results;
-
     searchByUsername(root, username, results);
     return results;
 }
 
-std::vector<User*> UserBST::getAllUsers() const
-{
+std::vector<User*> UserBST::getAllUsers() const {
     std::vector<User*> users;
     inorder(root, users);
     return users;
@@ -161,8 +147,7 @@ std::vector<User*> UserBST::getAllUsers() const
 // FOLLOW / UNFOLLOW
 // ==========================
 
-bool UserBST::followUser(int followerID, int targetID)
-{
+bool UserBST::followUser(int followerID, int targetID) {
     if (followerID == targetID)
         return false;
 
@@ -179,8 +164,7 @@ bool UserBST::followUser(int followerID, int targetID)
     return true;
 }
 
-bool UserBST::unfollowUser(int followerID, int targetID)
-{
+bool UserBST::unfollowUser(int followerID, int targetID) {
     User* follower = getUserByID(followerID);
     User* target = getUserByID(targetID);
 
